@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* NAV carrusel */
+.nav-carrusel {
+  position: relative;
+  width: 100vw;
+  height: 500px;
+  overflow: hidden;
+  background-color: #000;
+}
+.nav-carrusel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+.nav-carrusel button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.6);
+  border: none;
+  font-size: 24px;
+  padding: 10px 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+}
+.nav-carrusel button:hover {
+  background-color: rgba(255, 255, 255, 0.9);
+}
+.nav-carrusel button:first-of-type {
+  left: 20px;
+}
+.nav-carrusel button:last-of-type {
+  right: 20px;
+}
