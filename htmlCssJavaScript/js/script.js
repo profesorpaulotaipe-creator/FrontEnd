@@ -1,12 +1,13 @@
 function toggleMenu() {
-  const menu = document.getElementById("menuOpciones");
-  menu.classList.toggle("activo");
-}
+      const menu = document.getElementById("menuOpciones");
+      menu.classList.toggle("activo");
+    }
+
 const imagenes = [
+  "source/img/onepiece.jpg",
   "source/img/nakamas.jpg",
   "source/img/nakamasV.2.jpg",
-  "source/img/nakamasV.3.jpg",
-  "source/img/onepiece.jpg"
+  "source/img/nakamasV.3.jpg"
 ];
 let indice = 0;
 
