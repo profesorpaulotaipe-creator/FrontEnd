@@ -12,7 +12,14 @@ const imagenes = [
 let indice = 0;
 
 function actualizarImagen() {
-  document.getElementById("imagenCarrusel").src = imagenes[indice];
+  const img = document.getElementById("imagenCarrusel");
+
+  img.classList.add("fade-out");
+
+  setTimeout(() =>{
+    img.src = imagenes[indice];
+    img.classList.remove("fade-out");
+  }, 500);
 }
 
 function siguienteImagen() {
@@ -25,6 +32,12 @@ function anteriorImagen() {
   actualizarImagen();
 }
 
+function iniciarCarruselAutomatico() {
+  setInterval(() => {
+    siguienteImagen();
+  }, 3000);
+}
+
 function mostrar(id) {
   const secciones = document.querySelectorAll("#contenido > *");
   secciones.forEach(sec => sec.classList.add("oculto"));
@@ -34,7 +47,20 @@ function mostrar(id) {
 let modoEdicion = false;
 let indiceEdicion = null;
 
+function cargarFooter(){
+  fetch("html/footer.html")
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById("footer-container").innerHTML = data;
+  })
+  .catch(error => console.error("Error al cargar el footer: ", error));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  actualizarImagen();
+  iniciarCarruselAutomatico();
+  cargarFooter();
+
   const form = document.getElementById('formContacto');
   const mensaje = document.getElementById('mensajeGuardado');
 
