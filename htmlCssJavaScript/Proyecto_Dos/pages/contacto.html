@@ -1,25 +1,188 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <script src="../js/app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — Mi Sitio Web</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/app.js" defer></script>
 </head>
 <body>
-    
-    <div id="nav-container"></div>
-    
-    <hr class="border-light">
 
-    <div class="container">
-        <h1>
-            Este es el contacto.html
-        </h1>
+  <div id="nav-container"></div>
+  <hr class="border-light">
+
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-7 mx-auto">
+
+        <h2 class="fw-bold mb-1 animar">✉️ Contacto</h2>
+        <p class="text-muted mb-4 animar">
+          El formulario recuerda tu último mensaje. Cierra la página, vuelve y compruébalo.
+        </p>
+
+        <!-- Formulario -->
+        <div class="tarjeta mb-4 animar">
+          <div class="mb-3">
+            <label for="campo-nombre" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="campo-nombre"
+                   placeholder="Tu nombre">
+          </div>
+          <div class="mb-3">
+            <label for="campo-email" class="form-label">Correo electrónico</label>
+            <input type="email" class="form-control" id="campo-email"
+                   placeholder="correo@ejemplo.com">
+          </div>
+          <div class="mb-3">
+            <label for="campo-asunto" class="form-label">Asunto</label>
+            <select class="form-select" id="campo-asunto">
+              <option value="">— Selecciona —</option>
+              <option>Consulta general</option>
+              <option>Soporte técnico</option>
+              <option>Colaboración</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="campo-mensaje" class="form-label">Mensaje</label>
+            <textarea class="form-control" id="campo-mensaje" rows="4"
+                      placeholder="Escribe tu mensaje..." maxlength="500"></textarea>
+            <small class="text-muted d-block text-end mt-1">
+              <span id="contador-chars">0</span>/500
+            </small>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary"          onclick="enviarFormulario()">Enviar 📨</button>
+            <button class="btn btn-outline-secondary" onclick="limpiarFormulario()">Limpiar</button>
+          </div>
+        </div>
+
+        <!-- Confirmación -->
+        <div id="div-confirmacion" class="alert alert-success" style="display:none;">
+          ✅ <strong>¡Guardado!</strong> En un sitio real esto se enviaría al servidor.
+        </div>
+
+        <!-- Último mensaje guardado -->
+        <div id="div-historial" class="tarjeta mb-4 animar" style="display:none;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0">📋 Último mensaje guardado</h6>
+            <button class="btn btn-sm btn-outline-danger"
+                    onclick="borrarHistorial()">🗑️ Borrar</button>
+          </div>
+          <div class="row g-2 small" id="historial-datos"></div>
+          <div class="alert alert-info small mt-3 mb-0">
+            💡 Este objeto se guardó como <strong>JSON</strong>.
+            <code>guardar()</code> usa <code>JSON.stringify()</code> internamente.
+          </div>
+        </div>
+
+        <!-- Bloque explicativo JSON -->
+        <div class="tarjeta animar">
+          <h6 class="fw-bold mb-2">🔑 ¿Por qué necesitamos JSON?</h6>
+          <p class="small text-muted mb-2">
+            localStorage solo guarda <em>texto</em>. Para guardar un objeto hay que
+            convertirlo primero:
+          </p>
+          <pre class="bg-dark text-light p-3 rounded small"><code>// ❌ Esto guarda "[object Object]"
+localStorage.setItem("datos", { nombre: "Ana" });
+
+// ✅ Así se hace correctamente
+const datos = { nombre: "Ana", email: "ana@mail.com" };
+localStorage.setItem("datos", JSON.stringify(datos));
+
+// Para leer y usar:
+const obj = JSON.parse(localStorage.getItem("datos"));
+console.log(obj.nombre); // "Ana"</code></pre>
+        </div>
+
+      </div>
     </div>
+  </div>
 
-    <hr class="border-light">
-    <div id="footer-container"></div>
+  <hr class="border-light">
+  <div id="footer-container"></div>
+  <button id="btn-tema" onclick="toggleTema()">🌙 Oscuro</button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Pre-rellenar nombre/email si ya se guardaron antes
+      const datosUsuario = leer("datos-contacto-usuario");
+      if (datosUsuario) {
+        document.getElementById("campo-nombre").value = datosUsuario.nombre || "";
+        document.getElementById("campo-email").value  = datosUsuario.email  || "";
+      }
+
+      mostrarHistorial();
+
+      // Contador de caracteres
+      document.getElementById("campo-mensaje").addEventListener("input", (e) => {
+        document.getElementById("contador-chars").textContent = e.target.value.length;
+      });
+
+      // Botón de tema
+      const tema = leer("tema", "claro");
+      const btn  = document.getElementById("btn-tema");
+      if (btn) btn.textContent = tema === "oscuro" ? "☀️ Claro" : "🌙 Oscuro";
+    });
+
+    function enviarFormulario() {
+      const nombre  = document.getElementById("campo-nombre").value.trim();
+      const email   = document.getElementById("campo-email").value.trim();
+      const asunto  = document.getElementById("campo-asunto").value;
+      const mensaje = document.getElementById("campo-mensaje").value.trim();
+
+      if (!nombre || !email || !asunto || !mensaje) {
+        alert("⚠️ Completa todos los campos.");
+        return;
+      }
+
+      // Guardamos un OBJETO completo (app.js hace el JSON.stringify)
+      guardar("ultimo-mensaje", {
+        nombre, email, asunto, mensaje,
+        fecha: new Date().toLocaleString("es-CL"),
+      });
+
+      // Guardamos nombre/email para pre-rellenar la próxima vez
+      guardar("datos-contacto-usuario", { nombre, email });
+
+      const div = document.getElementById("div-confirmacion");
+      div.style.display = "block";
+      setTimeout(() => div.style.display = "none", 3500);
+
+      mostrarHistorial();
+    }
+
+    function limpiarFormulario() {
+      ["campo-nombre","campo-email","campo-mensaje"].forEach(
+        id => document.getElementById(id).value = ""
+      );
+      document.getElementById("campo-asunto").value    = "";
+      document.getElementById("contador-chars").textContent = "0";
+    }
+
+    function mostrarHistorial() {
+      const ultimo     = leer("ultimo-mensaje");
+      const contenedor = document.getElementById("div-historial");
+      const datos      = document.getElementById("historial-datos");
+
+      if (!ultimo) { contenedor.style.display = "none"; return; }
+
+      datos.innerHTML = `
+        <div class="col-sm-6"><div class="dato-guardado"><strong>👤 Nombre:</strong><br>${ultimo.nombre}</div></div>
+        <div class="col-sm-6"><div class="dato-guardado"><strong>📧 Email:</strong><br>${ultimo.email}</div></div>
+        <div class="col-sm-6"><div class="dato-guardado"><strong>📌 Asunto:</strong><br>${ultimo.asunto}</div></div>
+        <div class="col-sm-6"><div class="dato-guardado"><strong>🕐 Fecha:</strong><br>${ultimo.fecha}</div></div>
+        <div class="col-12"><div class="dato-guardado"><strong>💬 Mensaje:</strong><br>${ultimo.mensaje}</div></div>
+      `;
+      contenedor.style.display = "block";
+    }
+
+    function borrarHistorial() {
+      borrar("ultimo-mensaje");
+      document.getElementById("div-historial").style.display = "none";
+    }
+  </script>
+
 </body>
 </html>

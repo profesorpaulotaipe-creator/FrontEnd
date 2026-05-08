@@ -1,25 +1,142 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <script src="../js/app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nosotros — Mi Sitio Web</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/app.js" defer></script>
 </head>
 <body>
-    
-    <div id="nav-container"></div>
-    
-    <hr class="border-light">
 
-    <div class="container">
-        <h1>
-            Este es el nosotros.html
-        </h1>
+  <div id="nav-container"></div>
+  <hr class="border-light">
+
+  <div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+      <div>
+        <h2 class="fw-bold mb-1 animar">🏢 Nosotros</h2>
+        <p class="text-muted animar">Conoce más sobre este proyecto educativo.</p>
+      </div>
+      <div class="animar">
+        <span class="badge-visitas">
+          👁️ Tus visitas: <span id="numero-visitas">0</span>
+        </span>
+        <br>
+        <button class="btn btn-sm btn-outline-secondary mt-2"
+                onclick="resetearVisitas()">Resetear</button>
+      </div>
     </div>
 
-    <hr class="border-light">
-    <div id="footer-container"></div>
+    <!-- Contenido -->
+    <div class="tarjeta mb-4 animar">
+      <h5 class="fw-bold">¿Quiénes somos?</h5>
+      <p>Somos un equipo de estudiantes aprendiendo desarrollo web moderno.
+         Este sitio es nuestro proyecto de práctica con
+         <strong>HTML, CSS, Bootstrap y JavaScript</strong>.</p>
+      <p class="mb-0">En esta página aprendemos a
+         <strong>contar cuántas veces el usuario visita esta sección</strong>
+         usando <code>localStorage</code>.</p>
+    </div>
+
+    <!-- Pasos del contador -->
+    <div class="tarjeta mb-4 animar">
+      <h6 class="fw-bold mb-3">🔢 Patrón: leer → modificar → guardar</h6>
+      <div class="d-flex flex-column gap-3">
+
+        <div class="d-flex gap-3 align-items-start">
+          <span class="badge bg-primary rounded-circle d-flex align-items-center
+                       justify-content-center"
+                style="width:32px;height:32px;min-width:32px;">1</span>
+          <div>
+            <strong>Leer el valor actual</strong><br>
+            <code class="small">const visitas = leer("visitas-nosotros", 0);</code>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 align-items-start">
+          <span class="badge bg-primary rounded-circle d-flex align-items-center
+                       justify-content-center"
+                style="width:32px;height:32px;min-width:32px;">2</span>
+          <div>
+            <strong>Sumar 1 y guardar</strong><br>
+            <code class="small">guardar("visitas-nosotros", visitas + 1);</code>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 align-items-start">
+          <span class="badge bg-primary rounded-circle d-flex align-items-center
+                       justify-content-center"
+                style="width:32px;height:32px;min-width:32px;">3</span>
+          <div>
+            <strong>Mostrar en pantalla</strong><br>
+            <code class="small">document.getElementById("numero-visitas").textContent = visitas + 1;</code>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Equipo generado con JS -->
+    <h5 class="fw-bold mb-3">👥 El equipo</h5>
+    <div class="row g-3" id="equipo-container"></div>
+
+    <div class="alert alert-warning small mt-4">
+      ⚠️ <strong>Nota:</strong> Este contador es <em>local</em> — solo cuenta en
+      <strong>tu navegador</strong>. No es un contador real de visitas del servidor.
+    </div>
+
+  </div>
+
+  <hr class="border-light">
+  <div id="footer-container"></div>
+  <button id="btn-tema" onclick="toggleTema()">🌙 Oscuro</button>
+
+  <script>
+    const equipo = [
+      { nombre: "Ana García",    rol: "Diseño UI/UX",       emoji: "🎨" },
+      { nombre: "Luis Martínez", rol: "Frontend Developer",  emoji: "💻" },
+      { nombre: "Sofía Torres",  rol: "Backend Developer",   emoji: "⚙️" },
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      contarVisita();
+      renderizarEquipo();
+
+      const tema = leer("tema", "claro");
+      const btn  = document.getElementById("btn-tema");
+      if (btn) btn.textContent = tema === "oscuro" ? "☀️ Claro" : "🌙 Oscuro";
+    });
+
+    function contarVisita() {
+      const actual = leer("visitas-nosotros", 0);
+      const nuevo  = actual + 1;
+      guardar("visitas-nosotros", nuevo);
+      document.getElementById("numero-visitas").textContent = nuevo;
+    }
+
+    function resetearVisitas() {
+      guardar("visitas-nosotros", 0);
+      document.getElementById("numero-visitas").textContent = 0;
+    }
+
+    function renderizarEquipo() {
+      const contenedor = document.getElementById("equipo-container");
+      equipo.forEach((p) => {
+        const col = document.createElement("div");
+        col.className = "col-md-4 animar";
+        col.innerHTML = `
+          <div class="tarjeta text-center h-100">
+            <div style="font-size:2.5rem">${p.emoji}</div>
+            <h6 class="fw-bold mt-2">${p.nombre}</h6>
+            <small class="text-muted">${p.rol}</small>
+          </div>`;
+        contenedor.appendChild(col);
+      });
+    }
+  </script>
+
 </body>
 </html>

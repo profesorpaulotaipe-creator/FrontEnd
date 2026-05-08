@@ -1,25 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <script src="../js/app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio — Mi Sitio Web</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/app.js" defer></script>
 </head>
 <body>
-    
-    <div id="nav-container"></div>
-    
-    <hr class="border-light">
 
-    <div class="container">
-        <h1>
-            Este es el inicio.html
-        </h1>
+  <div id="nav-container"></div>
+  <hr class="border-light">
+
+  <div class="container py-5">
+
+    <h2 class="fw-bold mb-1 animar">👋 Bienvenido</h2>
+    <p class="text-muted mb-4 animar">Ingresa tu nombre y el sitio te recordará.</p>
+
+    <!-- Saludo (visible cuando hay nombre guardado) -->
+    <div id="div-saludo" class="alert alert-primary animar" style="display:none;">
+      <p class="mb-1 fw-semibold" id="texto-saludo"></p>
+      <small>Tu nombre está guardado en localStorage.</small>
     </div>
 
-    <hr class="border-light">
-    <div id="footer-container"></div>
+    <!-- Formulario para guardar nombre -->
+    <div class="tarjeta animar" id="div-formulario">
+      <label for="input-nombre" class="form-label fw-semibold">¿Cómo te llamas?</label>
+      <div class="input-group">
+        <input type="text" class="form-control" id="input-nombre"
+               placeholder="Escribe tu nombre..." maxlength="40">
+        <button class="btn btn-primary" onclick="guardarNombre()">Guardar 💾</button>
+      </div>
+      <small class="text-muted mt-2 d-block">
+        💡 Cierra esta página, vuelve a abrirla y verás que el sitio te recuerda.
+      </small>
+    </div>
+
+    <!-- Botón olvidar -->
+    <div class="text-end mt-2" id="div-olvidar" style="display:none;">
+      <button class="btn btn-sm btn-outline-danger" onclick="olvidarNombre()">
+        🗑️ Olvidar mi nombre
+      </button>
+    </div>
+
+    <!-- Cards explicativas -->
+    <div class="row g-3 mt-4">
+      <div class="col-md-4 animar">
+        <div class="tarjeta text-center h-100">
+          <div style="font-size:2rem">💾</div>
+          <h6 class="fw-bold mt-2">guardar()</h6>
+          <code class="small text-primary">localStorage.setItem()</code>
+          <p class="small text-muted mt-2">Guarda un dato con un nombre.</p>
+        </div>
+      </div>
+      <div class="col-md-4 animar">
+        <div class="tarjeta text-center h-100">
+          <div style="font-size:2rem">📖</div>
+          <h6 class="fw-bold mt-2">leer()</h6>
+          <code class="small text-primary">localStorage.getItem()</code>
+          <p class="small text-muted mt-2">Recupera el dato guardado.</p>
+        </div>
+      </div>
+      <div class="col-md-4 animar">
+        <div class="tarjeta text-center h-100">
+          <div style="font-size:2rem">🗑️</div>
+          <h6 class="fw-bold mt-2">borrar()</h6>
+          <code class="small text-primary">localStorage.removeItem()</code>
+          <p class="small text-muted mt-2">Elimina un dato guardado.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info small mt-4">
+      🔍 <strong>Tip:</strong> Abre las DevTools (<kbd>F12</kbd>) → <strong>Application</strong>
+      → <strong>Local Storage</strong> para ver los datos en tiempo real.
+    </div>
+
+  </div>
+
+  <hr class="border-light">
+  <div id="footer-container"></div>
+  <button id="btn-tema" onclick="toggleTema()">🌙 Oscuro</button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const nombre = leer("nombre-usuario");
+      if (nombre) mostrarSaludo(nombre);
+
+      const tema = leer("tema", "claro");
+      const btn  = document.getElementById("btn-tema");
+      if (btn) btn.textContent = tema === "oscuro" ? "☀️ Claro" : "🌙 Oscuro";
+    });
+
+    function guardarNombre() {
+      const input  = document.getElementById("input-nombre");
+      const nombre = input.value.trim();
+      if (!nombre) {
+        input.classList.add("is-invalid");
+        setTimeout(() => input.classList.remove("is-invalid"), 1500);
+        return;
+      }
+      guardar("nombre-usuario", nombre);
+      mostrarSaludo(nombre);
+    }
+
+    function mostrarSaludo(nombre) {
+      const hora   = new Date().getHours();
+      const saludo = hora < 12 ? "Buenos días" : hora < 19 ? "Buenas tardes" : "Buenas noches";
+      document.getElementById("texto-saludo").textContent = `${saludo}, ${nombre}! 🎉`;
+      document.getElementById("div-saludo").style.display    = "block";
+      document.getElementById("div-formulario").style.display = "none";
+      document.getElementById("div-olvidar").style.display   = "block";
+    }
+
+    function olvidarNombre() {
+      borrar("nombre-usuario");
+      document.getElementById("div-saludo").style.display    = "none";
+      document.getElementById("div-formulario").style.display = "block";
+      document.getElementById("div-olvidar").style.display   = "none";
+      document.getElementById("input-nombre").value = "";
+    }
+  </script>
+
 </body>
 </html>
