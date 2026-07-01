@@ -249,7 +249,6 @@ Si tienes problemas:
 1. Verifica que Docker Desktop está corriendo
 2. Ejecuta `docker-compose logs` para ver errores
 3. Intenta: `docker-compose down` y luego `docker-compose up --build`
-4. Contacta al profesor
 
 ---
 
