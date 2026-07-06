@@ -1,7 +1,32 @@
-node_modules
-dist
-.git
-.gitignore
-README.md
+# Dependencias (se instalan dentro del contenedor)
+node_modules/
+
+# Build anterior (se genera dentro del contenedor)
+dist/
+
+# Variables de entorno (se pasan por docker run o docker-compose)
 .env
+.env.local
+.env.*.local
+
+# Git
+.git/
+.gitignore
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Sistema operativo
 .DS_Store
+Thumbs.db
+
+# Docker mismo
+Dockerfile
+.dockerignore
+docker-compose.yml
